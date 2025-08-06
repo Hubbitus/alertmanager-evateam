@@ -202,3 +202,11 @@ podman run -it --rm --name alertmanager-evateam-manual \
     -p 8080:8080 \
         localhost/local/alertmanager-evateam:latest
 ```
+
+## Feedback welcome!
+
+Please contact me in issues or discussions if you have any questions or suggestions!
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
