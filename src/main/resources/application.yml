@@ -7,6 +7,7 @@ quarkus:
   native:
     resources:
       includes: '*.json'
+    builder-image: quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-24
 
   log:
     category:

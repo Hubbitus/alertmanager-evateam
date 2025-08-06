@@ -1,6 +1,7 @@
 # Dockerfile primary to have single well-known entrypoint
 # From https://www.graalvm.org/latest/docs/getting-started/container-images/
-FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 as builder
+#FROM ghcr.io/graalvm/native-image-community:21 AS builder
+FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-24 as builder
 
 WORKDIR /app
 
