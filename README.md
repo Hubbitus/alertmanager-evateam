@@ -2,6 +2,8 @@
 
 Prometheus alertmanager plugin which creates and manages [EvaTeam](https://www.evateam.ru/) (the competitor of well known JIRA) issues by alerts.
 
+See also [alertmanager-jira](https://github.com/Hubbitus/alertmanager-jira) for JIRA. This project is very similar to it, but for [EvaTeam](https://www.evateam.ru/).
+
 ## Container images
 Docker images are available at https://hub.docker.com/r/hubbitus/alertmanager-evateam TODO
 
