@@ -5,9 +5,9 @@ Prometheus alertmanager plugin which creates and manages [EvaTeam](https://www.e
 See also [alertmanager-jira](https://github.com/Hubbitus/alertmanager-jira) for JIRA. This project is very similar to it, but for [EvaTeam](https://www.evateam.ru/).
 
 ## Container images
-Docker images are available at https://hub.docker.com/r/hubbitus/alertmanager-evateam TODO
+Docker images are available at https://hub.docker.com/r/hubbitus/alertmanager-evateam
 
-[![docker images](https://img.shields.io/badge/docker-images-green)](https://hub.docker.com/r/hubbitus/alertmanager-evateam) TODO
+[![docker images](https://img.shields.io/badge/docker-images-green)](https://hub.docker.com/r/hubbitus/alertmanager-evateam)
 
 ## Configuration
 
