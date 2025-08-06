@@ -1,0 +1,166 @@
+package info.hubbitus.DTO
+
+import groovy.text.SimpleTemplateEngine
+import groovy.transform.Canonical
+import groovy.transform.Memoized
+import groovy.transform.ToString
+import info.hubbitus.evateam.EvaField
+import info.hubbitus.evateam.OptionsFields
+import info.hubbitus.service.EvateamService
+import org.jboss.logging.Logger
+
+import static info.hubbitus.evateam.OptionsFields.*
+
+/**
+* Context of alerting.
+* Class to collect around information like: Alert, EvaService, Log access and so on
+**/
+@Canonical
+@ToString(includeNames=true, includePackage=false)
+class AlertContext {
+	public static final String EVA_FIELD_KEY_PREFIX = 'eva__field__'
+
+	public Alert alert
+
+    // Not @Inject, because created manually
+    private static final Logger log = Logger.getLogger(AlertContext.class)
+
+	@Lazy
+	public Map<String, EvaField> evaFields = {
+		parseEvaFields()
+	}()
+
+    @Memoized
+    CmfTask toCmfTask() {
+//        Map<String, EvaField> evaFields = parseEvaFields() // Debug. Strange, but IDEA skip breakpoints if it called from @Lazy implementation
+
+        return new CmfTask(
+            project: field(EVA__PROJECT),
+            type: field(EVA__ISSUE_TYPE_NAME),
+            name: field('summary'),
+            text: field('description')
+        ).tap {CmfTask task ->
+            task.properties.findAll {
+                !(it.key as String in ['class', 'other_fields', 'project', 'type', 'name', 'text'])
+            }.each {
+                task."${it.key}" = evaFields[it.key]?.value
+            }
+            evaFields.findAll {!(it.key in task.properties)}.each {
+                task.other_fields[it.key] = it.value.value
+            }
+        }
+    }
+
+	/**
+	* Parse all `eva__field__` prefixed labels and annotations in the that order (so, last will override previous) to the fields specification.
+	* The most important which must be set for rule:
+	*
+	* `eva__field__*` - all fields which we are best trying to set in target issue. For examples: `eva__field__assignee: plalexeev`, `eva__field__priority: High`.
+	* Please note, for values contains list of values (array), please provide it in JSON form with square brackets and proper quoting. E.g.: `eva__field__labels: '["label_one", "labelTwo", "label:three"]'`
+	* `eva__field__name__<n>`/`eva__field__value__<n>` pairs. See notes below about possible variants of quoting and names providing
+	*
+    * See more description and examples in the README.md file.
+	*
+	* @param alert
+	* @return Map of parsed fields with name in key
+	**/
+	private Map<String, EvaField> parseEvaFields(){
+		Map<String, EvaField> fields = alert.params
+			.findAll{it.key.startsWith(EVA_FIELD_KEY_PREFIX) }
+			.collectEntries { param ->
+				EvaField fld = new EvaField(name: param.key - EVA_FIELD_KEY_PREFIX)
+
+				switch (true) {
+					case fld.name.startsWith('name__'): // Name/value pair. E.g. eva__field__name__2: 'Итоговый результат'/eva__field__value__2: 'Some result description (описание результата)'
+						String valueKey = "${EVA_FIELD_KEY_PREFIX}value__${fld.name - 'name__'}"
+						fld.name = param.value
+                        fld.rawValue = alert.params[valueKey]
+                        fld.value = field(valueKey)
+						break
+					case fld.name.startsWith('value__'): // Pair to the 'name__', skipping
+						return
+
+					default: // Assume simple variant with identifiers and _ replacements
+						fld.name = fld.name
+                        fld.rawValue = alert.params[param.key]
+                        fld.value = field(param.key)
+				}
+
+				return [ (fld.name): fld ]
+			}
+
+		addAlertIdentificationCode(fields)
+		return fields as Map<String, EvaField>
+	}
+
+    /**
+    * To be able identify issue next time when same alert happened, we need add to it some label, tag or another ID.
+    * This method do it, according to {@see OptionsFields.EVA__IDENTIFICATION_FIELD_NAME} and {@see OptionsFields.EVA__IDENTIFICATION_FIELD_VALUE}
+    * @param fields
+    **/
+	void addAlertIdentificationCode(Map<String, EvaField> fields){
+        String fieldName = taskIdentificationFieldName()
+        String fieldValue = taskIdentificationFieldValue()
+
+        if (fields.containsKey(fieldName)){
+            if (fields."${fieldName}" instanceof List) {
+                fields."${fieldName}" += fieldValue
+            }
+            else {
+                log.warn("Field [${fieldName}] already in issue, and it value will be replaced by identification!")
+                fields."${fieldName}".value = fieldValue
+            }
+        }
+        else {
+            fields[fieldName] = new EvaField(name: fieldName, value: fieldValue)
+        }
+	}
+
+    /**
+    * Access to provided values for the desired field (looks values in labels and annotations).
+    * Also handling templating by <a href="https://docs.groovy-lang.org/docs/next/html/documentation/template-engines.html#_simpletemplateengine">SimpleTemplateEngine</a>
+    * @see #template()
+    **/
+    @Memoized
+    String field(String name, String defaultValue = null){
+        return template(alert.params[name] ?: defaultValue)
+    }
+
+    @Memoized
+    String field(OptionsFields option){
+        return field(option.key, option.defaultValue)
+    }
+
+    @Memoized
+    String taskIdentificationFieldName(){
+        field(EVA__IDENTIFICATION_FIELD_NAME)
+    }
+
+    @Memoized
+    String taskIdentificationFieldValue(){
+        field(EVA__IDENTIFICATION_FIELD_VALUE)
+    }
+
+	/**
+	* Handling templates and other context (e.g. fields) referencing.
+    * Suppose you have in alert definition where you want reference other fields and expressions:
+	* <code>
+	* labels:
+	*   severity: warning
+	* annotations:
+	*   eva__field__labels: 'label_one, labelTwo, label:three, severity:${context.field("severity")}'
+	* </code>
+	* See more details and examples in readme.
+	**/
+	@Memoized
+	String template(String text){
+		if (!text)
+			return text
+
+		return new SimpleTemplateEngine().createTemplate(
+            // All $ signs which are not referencing context like '$context' or '${context.some}' must mbe escaped to \$ form to prevent error of template handling
+            // String for check: 'Some template ${context.alert.severity} some$200 other$className $context'
+            text.replaceAll(/\$(?!\{|context\.)/, '\\\\\\$'))
+			.make([context: this]).toString()
+	}
+}

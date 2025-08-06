@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+set -xe
+
+#http POST http://localhost:8080/alert < alert-sample.small.json5
+
+http POST https://evateam-alert.k8s-dev.gid.team/alert < alert-sample.small.json5

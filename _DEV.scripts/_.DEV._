@@ -1,0 +1,36 @@
+#!/usr/bin/bash
+
+source .env
+
+set -xe
+
+curl -k 'https://eva-lab.gid.team/api/' -X POST -H "Content-Type: application/json" --data-raw '{
+    "jsonrpc": "2.2",
+    "method": "CmfTask.list",
+    "kwargs": {"filter": ["project_id", "==", "CmfProject:07796e28-2054-11f0-a901-3e9b82c78085"]},
+    "callid": "Необязательный идентификатор запроса",
+    "jshash": "??"
+}' -H "Authorization: Bearer ${EVA_API_TOKEN}"
+
+exit
+
+curl -k 'https://eva-lab.gid.team/api/' -X POST -H "Content-Type: application/json" --data-raw '{
+    "jsonrpc": "2.2",
+    "method": "CmfTask.list",
+    "kwargs": {"filter": ["code", "==", "ALERT-3"]},
+    "callid": "Необязательный идентификатор запроса",
+    "jshash": "??"
+}' -H "Authorization: Bearer ${EVA_API_TOKEN}"
+
+exit
+
+# jshash required in API answer but does not covered in DOC (https://docs.evateam.ru/docs/docs/DOC-000201#pravila-raboty-s-api)
+curl -k 'https://eva-lab.gid.team/api/' -X POST -H "Content-Type: application/json" --data-raw '{
+    "jsonrpc": "2.2",
+    "method": "CmfTask.list",
+    "kwargs": {"filter": ["code", "==", "DEV-000003"]},
+    "callid": "Необязательный идентификатор запроса",
+    "jshash": "??"
+}' -H "Authorization: Bearer ${EVA_API_TOKEN}"
+
+exit

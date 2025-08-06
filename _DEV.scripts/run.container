@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+podman rm -vf alertmanager-evateam-manual
+
+podman run --rm -i --name alertmanager-evateam-manual -p 8080:8080 \
+	-e EVA_API_TOKEN="$(pass show GID.ru/CorporateServices/eva.gid.team/EVA_API_TOKEN)" \
+		hubbitus/alertmanager-evateam:v1.0.1

@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+    id 'io.quarkus' version "$quarkusPluginVersion"
+    id 'groovy'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation "io.quarkus:quarkus-container-image-jib:${quarkusPlatformVersion}"
+//    implementation "io.quarkus:quarkus-resteasy-reactive:${quarkusPlatformVersion}"
+    implementation "io.quarkus:quarkus-config-yaml:${quarkusPlatformVersion}"
+
+    /**
+    * Unfortunately Spock is not supported yet, so use JUnit5.
+    * @link <a href="https://github.com/quarkusio/quarkus/issues/6506">Quarkus issue for that</a>
+    * @link <a href="https://github.com/quarkusio/quarkus/issues/30221">Quarkus spock extension proposal</a>
+    **/
+    testImplementation "io.quarkus:quarkus-junit5:${quarkusPlatformVersion}"
+    testImplementation "io.rest-assured:rest-assured:${quarkusPlatformVersion}"
+//    testImplementation 'org.mockito:mockito-core:5.18.0'
+
+
+    implementation "io.quarkiverse.groovy:quarkus-groovy:${quarkusPlatformVersion}"
+    implementation "org.apache.groovy:groovy-json:${groovyVersion}"
+    implementation "org.apache.groovy:groovy-templates:${groovyVersion}"
+    // Tests on groovy too:
+    testImplementation "io.quarkiverse.groovy:quarkus-groovy:${quarkusPlatformVersion}"
+    testImplementation "org.apache.groovy:groovy-all:${groovyVersion}"
+
+    implementation 'io.smallrye.reactive:smallrye-mutiny-vertx-web-client:3.19.1'
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:4.0.0'
+    implementation "io.quarkus:quarkus-rest-jackson:${quarkusPlatformVersion}"
+
+//        implementation 'io.quarkus:quarkus-resteasy-reactive-jackson:2.16.4.Final'
+
+    implementation 'io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.1.6'
+    implementation "io.quarkus:quarkus-micrometer-registry-prometheus:${quarkusPlatformVersion}"
+}
+
+
+group = 'info.hubbitus.alertmanager-evateam'
+version = '1.0.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+test {
+    systemProperty 'java.util.logging.manager', 'org.jboss.logmanager.LogManager'
+}
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-parameters'
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+}

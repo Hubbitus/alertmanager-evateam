@@ -1,0 +1,14 @@
+#*
+#!build/*-runner
+#!build/*-runner.jar
+#!build/lib/*
+#!build/quarkus-app/*
+build/
+.git/
+node_modules/
+.env
+connekt.env.json
+
+_DEV.scripts/load_data.json
+*.BAK
+*.DEL

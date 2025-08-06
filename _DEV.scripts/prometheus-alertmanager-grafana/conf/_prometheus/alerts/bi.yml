@@ -1,0 +1,55 @@
+groups:
+
+- name: BI
+  rules:
+    - alert: DataTest0
+      # Docs:
+      # 1. https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+      # 2. https://prometheus.io/docs/practices/rules/#recording-rules
+      expr: 'promhttp_metric_handler_requests_total > 1'
+      for: 10s
+      labels:
+        severity: warning
+        eva__field__priority: High
+        # Please note: `$value` and `for` may lead to alert will always in pending state!
+        # See https://groups.google.com/g/prometheus-users/c/7Ul6ngc7Ogs/m/j_YDszV5BwAJ
+        # So, probably that should be placed into annotations!
+#        value: '{{$value}}'
+        # Example of overwriting global labels set in prometheus's `external_labels` config:
+        global_label_1: 2
+      annotations:
+        eva__project: data-alerts
+        eva__issue_type_name: Task
+        eva__field__assignee: plalexeev
+        eva__field__labels: 'label_one, labelTwo, label:three'
+        eva__field__name__1: 'Итоговый результат'
+        eva__field__value__1: 'Some result description (описание результата)'
+        # Field 'Target start'
+        eva__field__target_start: '2023-11-06'
+        qaz1_annotation: qaz1_annotation_value
+        value: '{{$value}}'
+        summary: DataTest0 summary ${new Date()}
+        description: |
+          Some description QAZ2
+          of DataTest0 alert
+          VALUE: {{$value}}
+        eva__comment_in_present_issues: |
+          Looks like error happened again!
+
+    - alert: DataTest1
+      expr: 'promhttp_metric_handler_requests_total > 1'
+      for: 10s
+      labels:
+        severity: warning
+        qaz1_label: qaz1_label_value
+        eva__field__priority: High
+      annotations:
+        summary: DataTest1 summary
+        eva__field__assignee: plalexeev
+        qaz1_annotation: qaz1_annotation_value
+        qaz2_annotation: qaz2_annotation_value
+        # Field "Итоговый результат"
+        eva__field__customId__10217: 'Some result description (описание результата)'
+        description: |
+          Some description QAZ2
+          of DataTest1 alert
