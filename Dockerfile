@@ -1,7 +1,5 @@
 # Dockerfile primary to have single well-known entrypoint
 # From https://www.graalvm.org/latest/docs/getting-started/container-images/
-#FROM ghcr.io/graalvm/native-image-community:17 as builder
-#FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 as builder
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 as builder
 
 WORKDIR /app
@@ -10,8 +8,8 @@ COPY --chown=1001 . /app
 
 RUN chmod "g+rwX" /app
 
-# Tests run in separate CI task
-RUN ./gradlew build -Dquarkus.package.type=native
+# Tests run in separate CI task and require remote service unfortunately
+RUN ./gradlew build -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false -x test
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
