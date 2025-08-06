@@ -10,10 +10,8 @@ COPY --chown=1001 . /app
 
 RUN chmod "g+rwX" /app
 
-RUN microdnf install findutils
-
 # Tests run in separate CI task
-RUN ./gradlew build -Dquarkus.package.type=native -x test
+RUN ./gradlew build -Dquarkus.package.type=native
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
