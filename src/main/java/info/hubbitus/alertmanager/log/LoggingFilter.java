@@ -22,20 +22,12 @@ class LoggingFilter implements ContainerRequestFilter {
     @Inject
     Logger log;
 
-    /* Useful stuff for later development purposes.
-    @Context
-    UriInfo info;
-
-    @Context
-    HttpServerRequest request;
-    */
-
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 // TODO Blocking?? See https://smallrye.io/smallrye-mutiny/latest/guides/imperative-to-reactive/
-//?        byte[] requestSource = requestContext.getEntityStream().readAllBytes();
-//        log.debug("Raw JSON request on URL [" + requestContext.getUriInfo().getAbsolutePath() + "]:\n" + new String(requestSource, UTF_8));
-//        // Set back input stream for the controllers
-//        requestContext.setEntityStream(new ByteArrayInputStream(requestSource));
+        byte[] requestSource = requestContext.getEntityStream().readAllBytes();
+        log.debug("Raw JSON request on URL [" + requestContext.getUriInfo().getAbsolutePath() + "]:\n" + new String(requestSource, UTF_8));
+        // Set back input stream for the controllers
+        requestContext.setEntityStream(new ByteArrayInputStream(requestSource));
     }
 }

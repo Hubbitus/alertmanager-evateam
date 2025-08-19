@@ -32,7 +32,7 @@ class AlertControllerTest {
 	}
 
 	@Test
-    @Disabled("Only for run manually because require lobe EvaTeam instance")
+    @Disabled("Only for run manually because require external EvaTeam instance")
 	void test01_SimplePostAlert() throws IOException {
 		given()
 			.contentType("application/json")

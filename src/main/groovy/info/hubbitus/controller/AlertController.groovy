@@ -56,12 +56,7 @@ class AlertController {
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     @SuppressWarnings(['GrUnnecessaryPublicModifier']) // That is controller, public required
-//    public Uni<JsonObject> alert(AlertRequest alertRequest) {
-//    public Uni<CmfTask> alert(AlertRequest alertRequest) {
-//    Multi<JsonObject> alert(AlertRequest alertRequest) {
     Response alert(AlertRequest alertRequest) {
-//    Multi<Object> alert(AlertRequest alertRequest) {
-//    String alert(AlertRequest alertRequest) {
         log.debug("Got alertRequest with ${alertRequest.alerts.size()} alert(s)")
 
 // WORKS:
@@ -70,10 +65,7 @@ class AlertController {
 //                return eva.getTaskById('CmfTask:a1a3f454-610f-11f0-b8f2-1e3d881e25e5')
 //            }
 
-//        return eva.createTask(new CmfTask())
-
         def ret = eva.process(alertRequest)
-//        return ret
 
         List res = ret.collect().asList().await().indefinitely()
         log.debug("Got ${res.size()} response(s)")

@@ -43,13 +43,16 @@ class EvateamService {
                 )
                 return tasksByAlert(alerting).onItem().transformToMulti { List<CmfTask> tasks ->
                     if (tasks.size() > 0) {
-                        return Uni.join().all(tasks.collect { CmfTask task ->
-                            commentTask(task.id, alerting.field(EVA__COMMENT_IN_PRESENT_ISSUES))
-                        }).andCollectFailures()
+                        return Uni.join().all(
+                            tasks.collect { CmfTask task ->
+                                commentTask(task.id, alerting.field(EVA__COMMENT_IN_PRESENT_ISSUES))
+                            }
+                        ).andCollectFailures().toMulti().flatMap {Multi.createFrom().iterable(it) }
                         /* Not parallel code (but works):
-                        Multi.createFrom().iterable(tasks).onItem().transformToUni { CmfTask task ->
+                        return Multi.createFrom().iterable(tasks).onItem().transformToUni { CmfTask task ->
                             return commentTask(task.id, alerting.field(EVA__COMMENT_IN_PRESENT_ISSUES))
-                        }.merge()*/
+                        }.merge()
+                        */
                     }
                     else {
                         return createTaskRawWithTags(convertAlertToTask(alerting)).toMulti()
