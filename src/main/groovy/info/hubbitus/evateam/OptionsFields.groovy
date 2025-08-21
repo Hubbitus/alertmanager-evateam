@@ -1,5 +1,7 @@
 package info.hubbitus.evateam
 
+import groovy.transform.CompileStatic
+
 /**
 * There as enums listed most common, global options.
 * Also parsed dynamic values of fields:
@@ -7,6 +9,7 @@ package info.hubbitus.evateam
 * Please note, for values takes array, please provide it as comma-separated string, like: `eva__field__labels: 'label_one, labelTwo, label:three'`
 * `eva__field__name__<n>`/`eva__field__value__<n>` pairs. See notes below about possible variants of quoting and names providing
 **/
+@CompileStatic
 enum OptionsFields {
 	EVA__PROJECT('eva__project', 'The project name in which issue creation is supposed to be (e.g. `data-alerts`)', null),
     EVA__ISSUE_TYPE_NAME('eva__issue_type_name', 'The type of issue to create (e.g. `Task`)', 'Task'),

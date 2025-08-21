@@ -7,12 +7,19 @@ quarkus:
   native:
     resources:
       includes: '*.json'
-    builder-image: quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-24
+#    builder-image: ghcr.io/graalvm/native-image-community:24.0.2
+#    builder-image: quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-24
+    builder-image: quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-26.0.0_0
 
   log:
+    level: WARN
     category:
+      "io.quarkus":
+        level: WARN
       "info.hubbitus":
         level: DEBUG
+      "info.hubbitus.evateam":
+        level: WARN
       # By https://stackoverflow.com/a/68220910/307525
       # Produce a lot of info about HTTP traffic for the debug
 #      "org.apache.http":

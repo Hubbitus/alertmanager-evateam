@@ -19,10 +19,10 @@ import static org.hamcrest.core.Is.is;
 * @link <a href="https://github.com/quarkusio/quarkus/issues/30221">Quarkus spock extension proposal</a>
 **/
 @QuarkusTest
-class AlertControllerTest {
+public class AlertControllerTest {
 
 	@Test
-	public void testPingEndpoint() {
+	void testPingEndpoint() {
 		given()
 			.when()
 				.get("/ping")
@@ -47,6 +47,26 @@ class AlertControllerTest {
                 .body("content.eva_response", not(emptyArray()))
 		;
 	}
+
+    /**
+    * By issue DATA-8310
+    **/
+    @Test
+    @Disabled("Only for run manually because require external EvaTeam instance")
+    void test02_PostAlertDATA8310() throws IOException {
+        given()
+            .contentType("application/json")
+            .request().body(contentResourceFile("/alert-sample.DATA-8310.json5"))
+            .when()
+                .post("/alert")
+            .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .body(not(empty()))
+                .body("content.result", is("ok"))
+                .statusCode(200)
+                .body("content.eva_response", not(emptyArray()))
+        ;
+    }
 
 	/* *********************
 	* Helper methods

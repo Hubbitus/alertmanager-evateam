@@ -1,5 +1,8 @@
 package info.hubbitus.evateam
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class EvaException extends RuntimeException {
     EvaException(String message) {
         super(message)

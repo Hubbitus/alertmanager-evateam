@@ -4,6 +4,10 @@ source .env
 
 set -xe
 
+curl -X POST -H "Content-Type: application/json" -d @../src/test/resources/alert-sample.DATA-8310.json5 http://localhost:8080/alert
+
+exit
+
 curl -k 'https://eva-lab.gid.team/api/' -X POST -H "Content-Type: application/json" --data-raw '{
     "jsonrpc": "2.2",
     "method": "CmfTask.list",

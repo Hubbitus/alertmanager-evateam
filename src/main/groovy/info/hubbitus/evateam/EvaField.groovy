@@ -2,11 +2,13 @@ package info.hubbitus.evateam
 
 
 import groovy.transform.Canonical
+import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 import groovy.transform.ToString
 import io.vertx.core.json.JsonObject
 
 @Canonical
+@CompileStatic
 @ToString(includeNames=true, includePackage=false)
 class EvaField {
 	String name

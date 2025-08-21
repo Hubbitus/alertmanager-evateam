@@ -3,6 +3,7 @@ package info.hubbitus.DTO
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import groovy.transform.AutoClone
 import groovy.transform.Canonical
+import groovy.transform.CompileStatic
 import groovy.transform.ToString
 
 /**
@@ -10,6 +11,7 @@ import groovy.transform.ToString
 **/
 @Canonical
 @AutoClone
+@CompileStatic
 @ToString(includeNames=true, includePackage=false)
 class AlertRequest {
 	String receiver

@@ -191,6 +191,20 @@ or:
 
 See [documentation](https://quarkus.io/guides/building-native-image#creating-a-container) for available customizations.
 
+### Running tests
+
+> **WARNING**! There is no mocks for the EvaTeam instance. To run tests you need:
+> 1. Running EvaTeam instance and proper environment configuration
+> 2. Probably you need comment out `@Disabled` annotation in [AlertControllerTest.java](src/test/java/info/hubbitus/AlertControllerTest.java)
+
+To run integration tests:
+
+    ./gradlew test --info
+
+To run its in native mode:
+
+    ./gradlew testNative --info
+
 ### Related Guides
 
 - SmallRye Reactive Messaging - Kafka Connector ([guide](https://quarkus.io/guides/kafka-reactive-getting-started)): Connect to Kafka with Reactive Messaging

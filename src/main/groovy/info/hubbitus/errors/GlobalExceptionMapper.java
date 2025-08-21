@@ -1,5 +1,6 @@
 package info.hubbitus.errors;
 
+import groovy.transform.CompileStatic;
 import info.hubbitus.evateam.EvaException;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.ws.rs.BadRequestException;
@@ -11,6 +12,7 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
+@CompileStatic
 @SuppressWarnings("unused") // Quarkus configuration, used indirectly
 public class GlobalExceptionMapper {
 
@@ -27,6 +29,7 @@ public class GlobalExceptionMapper {
 
     @ServerExceptionMapper
 	public RestResponse<Resp> mapException(BadRequestException exception) {
+        log.error("mapException(BadRequestException exception)", exception);
 		return RestResponse.ResponseBuilder.<Resp>create(RestResponse.Status.BAD_REQUEST)
 			.entity(Resp.byException(exception))
 			.variant(new Variant(MediaType.APPLICATION_JSON_TYPE, "RU", "UTF-8"))
@@ -37,6 +40,7 @@ public class GlobalExceptionMapper {
 
 	@ServerExceptionMapper
 	public Response mapException(EvaException exception, ResourceInfo resourceInfo) {
+        log.errorf(exception, "mapException(EvaException exception, resourceInfo): resourceInfo: {}", resourceInfo);
 		return Response.status(Response.Status.BAD_REQUEST)
 			.entity(Resp.byException(exception))
 			.type(MediaType.APPLICATION_JSON)
@@ -45,9 +49,19 @@ public class GlobalExceptionMapper {
 
 	@ServerExceptionMapper
 	public Response mapException(IllegalArgumentException exception, ResourceInfo resourceInfo) {
-		return Response.status(Response.Status.BAD_REQUEST)
+        log.errorf(exception, "mapException(IllegalArgumentException exception, resourceInfo): resourceInfo: %s", resourceInfo);
+        return Response.status(Response.Status.BAD_REQUEST)
 			.entity(Resp.byException(exception))
 			.type(MediaType.APPLICATION_JSON)
 				.build();
 	}
+
+    @ServerExceptionMapper
+    public Response mapException(Throwable exception, ResourceInfo resourceInfo) {
+        log.errorf(exception, "mapException(Throwable exception, resourceInfo): resourceInfo: %s", resourceInfo.toString());
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(Resp.byException(exception))
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
 }

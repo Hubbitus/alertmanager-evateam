@@ -6,14 +6,12 @@ import info.hubbitus.DTO.Alert
 import info.hubbitus.DTO.AlertContext
 import info.hubbitus.DTO.AlertRequest
 import info.hubbitus.DTO.CmfTask
-import info.hubbitus.evateam.EvaException
 import info.hubbitus.service.EvateamService
 import io.quarkus.test.junit.QuarkusTest
 import io.smallrye.mutiny.Uni
 import io.vertx.core.json.JsonObject
 import jakarta.inject.Inject
 import org.jboss.logging.Logger
-import org.junit.Assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -24,7 +22,6 @@ import java.time.LocalDate
 import static org.hamcrest.CoreMatchers.*
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.greaterThan
-import static org.hamcrest.Matchers.nullValue
 import static org.hamcrest.core.IsNull.notNullValue
 import static org.hamcrest.core.IsNull.nullValue
 
@@ -140,9 +137,7 @@ class EvaServiceTest {
 
 		List<AlertContext> alertContexts = []
 		List<CmfTask> issuesToCreate = alertRequest.alerts.collect{ Alert alert ->
-			AlertContext alerting = new AlertContext(
-				alert: alert
-			)
+			AlertContext alerting = new AlertContext(alert)
 			alertContexts.add(alerting) // To check parsing
 			eva.convertAlertToTask(alerting)
 		}
@@ -154,7 +149,7 @@ class EvaServiceTest {
 		assertThat(alertContexts.size(), equalTo(1))
 
 		// 0 alert:
-		AlertContext alertContext = alertContexts.find{'DataTest0' == it.alert.params.alertname }
+		AlertContext alertContext = alertContexts.find{'DataTest0' == it.alert.params().alertname }
 		assertThat(alertContext, notNullValue())
 		assertThat(alertContext.evaFields.size(), equalTo(5))
 

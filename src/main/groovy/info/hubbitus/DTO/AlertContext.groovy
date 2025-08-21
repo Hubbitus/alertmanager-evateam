@@ -1,12 +1,9 @@
 package info.hubbitus.DTO
 
 import groovy.text.SimpleTemplateEngine
-import groovy.transform.Canonical
-import groovy.transform.Memoized
-import groovy.transform.ToString
+import groovy.transform.*
 import info.hubbitus.evateam.EvaField
 import info.hubbitus.evateam.OptionsFields
-import info.hubbitus.service.EvateamService
 import org.jboss.logging.Logger
 
 import static info.hubbitus.evateam.OptionsFields.*
@@ -16,6 +13,7 @@ import static info.hubbitus.evateam.OptionsFields.*
 * Class to collect around information like: Alert, EvaService, Log access and so on
 **/
 @Canonical
+@CompileStatic // Looks like required in native mode. Otherwise got error: java.lang.BootstrapMethodError: com.oracle.svm.core.jdk.UnsupportedFeatureError: Unsupported method java.lang.invoke.MethodHandleNatives.setCallSiteTargetNormal(CallSite, MethodHandle) is reachable
 @ToString(includeNames=true, includePackage=false)
 class AlertContext {
 	public static final String EVA_FIELD_KEY_PREFIX = 'eva__field__'
@@ -25,15 +23,15 @@ class AlertContext {
     // Not @Inject, because created manually
     private static final Logger log = Logger.getLogger(AlertContext.class)
 
-	@Lazy
-	public Map<String, EvaField> evaFields = {
-		parseEvaFields()
-	}()
+    final Map<String, EvaField> evaFields
+
+    AlertContext(Alert alert) {
+        this.alert = alert
+        this.evaFields = this.parseEvaFields()
+    }
 
     @Memoized
     CmfTask toCmfTask() {
-//        Map<String, EvaField> evaFields = parseEvaFields() // Debug. Strange, but IDEA skip breakpoints if it called from @Lazy implementation
-
         return new CmfTask(
             project: field(EVA__PROJECT),
             type: field(EVA__ISSUE_TYPE_NAME),
@@ -43,7 +41,7 @@ class AlertContext {
             task.properties.findAll {
                 !(it.key as String in ['class', 'other_fields', 'project', 'type', 'name', 'text'])
             }.each {
-                task."${it.key}" = evaFields[it.key]?.value
+                task.setProperty(it.key as String, evaFields[it.key]?.value)
             }
             evaFields.findAll {!(it.key in task.properties)}.each {
                 task.other_fields[it.key] = it.value.value
@@ -64,17 +62,18 @@ class AlertContext {
 	* @param alert
 	* @return Map of parsed fields with name in key
 	**/
-	private Map<String, EvaField> parseEvaFields(){
-		Map<String, EvaField> fields = alert.params
-			.findAll{it.key.startsWith(EVA_FIELD_KEY_PREFIX) }
-			.collectEntries { param ->
+//    @Memoized
+	Map<String, EvaField> parseEvaFields(){
+		Map<String, EvaField> fields = alert.params()
+			.findAll{ String key, String val -> key.startsWith(EVA_FIELD_KEY_PREFIX) }
+			.collectEntries{ param ->
 				EvaField fld = new EvaField(name: param.key - EVA_FIELD_KEY_PREFIX)
 
 				switch (true) {
 					case fld.name.startsWith('name__'): // Name/value pair. E.g. eva__field__name__2: 'Итоговый результат'/eva__field__value__2: 'Some result description (описание результата)'
 						String valueKey = "${EVA_FIELD_KEY_PREFIX}value__${fld.name - 'name__'}"
 						fld.name = param.value
-                        fld.rawValue = alert.params[valueKey]
+                        fld.rawValue = alert.params()[valueKey]
                         fld.value = field(valueKey)
 						break
 					case fld.name.startsWith('value__'): // Pair to the 'name__', skipping
@@ -82,7 +81,7 @@ class AlertContext {
 
 					default: // Assume simple variant with identifiers and _ replacements
 						fld.name = fld.name
-                        fld.rawValue = alert.params[param.key]
+                        fld.rawValue = alert.params()[param.key]
                         fld.value = field(param.key)
 				}
 
@@ -103,12 +102,13 @@ class AlertContext {
         String fieldValue = taskIdentificationFieldValue()
 
         if (fields.containsKey(fieldName)){
-            if (fields."${fieldName}" instanceof List) {
-                fields."${fieldName}" += fieldValue
+            EvaField field = fields.get(fieldName)
+            if (field.value instanceof List) {
+                (field.value as List).add(fieldValue)
             }
             else {
-                log.warn("Field [${fieldName}] already in issue, and it value will be replaced by identification!")
-                fields."${fieldName}".value = fieldValue
+                log.warn("Field [${fieldName}] already in task with value [${field.value}], and it value will be replaced by identification [${fieldValue}]!")
+                field.value = fieldValue
             }
         }
         else {
@@ -119,11 +119,11 @@ class AlertContext {
     /**
     * Access to provided values for the desired field (looks values in labels and annotations).
     * Also handling templating by <a href="https://docs.groovy-lang.org/docs/next/html/documentation/template-engines.html#_simpletemplateengine">SimpleTemplateEngine</a>
-    * @see #template()
+    * @see #template(java.lang.String)
     **/
     @Memoized
     String field(String name, String defaultValue = null){
-        return template(alert.params[name] ?: defaultValue)
+        return template((alert.params()[name] ?: defaultValue) as String)
     }
 
     @Memoized

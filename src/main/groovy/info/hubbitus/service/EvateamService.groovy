@@ -38,9 +38,7 @@ class EvateamService {
     Multi<JsonObject> process(AlertRequest alertRequest) {
         return Multi.createBy().merging().streams (
             alertRequest.alerts.collect { Alert alert ->
-                AlertContext alerting = new AlertContext (
-                    alert: alert
-                )
+                AlertContext alerting = new AlertContext(alert)
                 return tasksByAlert(alerting).onItem().transformToMulti { List<CmfTask> tasks ->
                     if (tasks.size() > 0) {
                         return Uni.join().all(

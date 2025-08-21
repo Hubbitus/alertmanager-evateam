@@ -1,0 +1,87 @@
+{
+    "receiver": "jiralert-data-eva",
+    "status": "firing",
+    "alerts": [
+        {
+            "status": "firing",
+            "labels": {
+                "alertgroup": "DATA-Eva",
+                "alertname": "AirflowDAGsLastStatusFailed",
+                "cluster": "dev",
+                "container": "webserver",
+                "dag_id": "reindex",
+                "endpoint": "airflow-ui",
+                "instance": "10.31.12.91:8080",
+                "job": "airflow-dev",
+                "namespace": "gidplatform-dev",
+                "owner": "DataPlatform",
+                "pod": "airflow-dev",
+                "prometheus": "monitoring-system/victoria-metrics-k8s-stack",
+                "release": "airflow-dev",
+                "service": "airflow-dev-webserver",
+                "severity": "warning",
+                "status": "failed"
+            },
+            "annotations": {
+                "description": "test description - empty",
+                "eva__identification_field_name": "cf_alert_id",
+                "eva__identification_field_value": "alert[${context.alert.fingerprint}]",
+                "eva__comment_in_present_issues": "Повторное срабатывание - снова замечена ошибка выполнения",
+                "eva__field__labels": "[\"DQ\", \"DQ:issue\"]",
+                "eva__field__name__1": "Component/s",
+                "eva__field__priority": "1",
+                "summary": "[] Завершился ошибкой DAG reindex - ${java.time.LocalDate.now()}",
+                "eva__field__value__1": "DQ-issues+alerts, DevOps+infrastructure",
+                "eva__field__issue_type_name": "Alert",
+                "eva__bql_to_find_issue_for_update": "[[\"cf_alert_id\",\"=\",\"${context.alert.fingerprint}\"],[\"cache_status_type\",\"!=\",\"CLOSED\"]]",
+                "eva__field__project": "data-alerts"
+            },
+            "startsAt": "2025-05-27T09:11:00Z",
+            "endsAt": "0001-01-01T00:00:00Z",
+            "generatorURL": "http://4d295ecc8f74:8880/vmalert/alert?group_id=18078730781334411159\u0026alert_id=6380476665394289386",
+            "fingerprint": "2f559d99774e36e8"
+        }
+    ],
+    "groupLabels": {
+        "alertname": "AirflowDAGsLastStatusFailed",
+        "cluster": "dev",
+        "job": "airflow-dev",
+        "service": "airflow-dev-webserver"
+    },
+    "commonLabels": {
+        "alertgroup": "DATA-Eva",
+        "alertname": "AirflowDAGsLastStatusFailed",
+        "cluster": "dev",
+        "container": "webserver",
+        "dag_id": "reindex",
+        "endpoint": "airflow-ui",
+        "instance": "10.31.12.91:8080",
+        "job": "airflow-dev-webserver",
+        "namespace": "gidplatform-dev",
+        "owner": "DataPlatform",
+        "pod": "airflow-dev",
+        "prometheus": "monitoring-system/victoria-metrics-k8s-stack",
+        "release": "airflow-dev",
+        "service": "airflow-dev-webserver",
+        "severity": "warning",
+        "status": "failed"
+    },
+    "commonAnnotations": {
+        "description": "test description - empty",
+        "eva__identification_field_name": "cf_alert_id",
+        "eva__identification_field_value": "alert[${context.alert.fingerprint}]",
+        "eva__comment_in_present_issues": "Повторное срабатывание - снова замечена ошибка выполнения",
+        "eva__field__labels": "[\"DQ\", \"DQ:issue\"]",
+        "eva__field__name__1": "Component/s",
+        "eva__field__priority": "1",
+        "summary": "[] Завершился ошибкой DAG reindex - ${java.time.LocalDate.now()}",
+        "eva__field__value__1": "DQ-issues+alerts, DevOps+infrastructure",
+        "eva__field__issue_type_name": "Alert",
+        "eva__bql_to_find_issue_for_update": "[\"cf_alert_id\",\"=\",\"${context.alert.fingerprint}\"],[\"cache_status_type\",\"!=\",\"CLOSED\"]]",
+        "eva__field__project": "data-alerts"
+    },
+    "externalURL": "https://alert-private.gid.team",
+    "version": "4",
+    "groupKey": "{}/{alertgroup=\"DATA-Eva\",alertname!=\"VisiologyEnergoMarketAlert|NavigatorKafkaAlert|KafkaTopicNoRecentDataAlert|ClickhouseLongQueries10minAlert|ClickhouseLongQueries20minAlert\"}:{alertname=\"AirflowDAGsLastStatusFailed\", cluster=\"goscloud\", job=\"airflow-dev-webserver\", service=\"airflow-dev-webserver\"}",
+    "truncatedAlerts": 0
+}

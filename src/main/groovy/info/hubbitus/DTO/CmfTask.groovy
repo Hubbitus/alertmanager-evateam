@@ -1,6 +1,7 @@
 package info.hubbitus.DTO
 
 import groovy.transform.Canonical
+import groovy.transform.CompileStatic
 import groovy.transform.ToString
 import info.hubbitus.evateam.EvaField
 import io.vertx.core.json.JsonObject
@@ -29,6 +30,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty
 * - project: 'ALERT', // Does NOT work: Exception in EvaTeam operation: Тип project не совпадает: str != CmfProject
 **/
 @Canonical
+@CompileStatic
 @ToString(includeNames=true, includePackage=false, includeFields=true)
 class CmfTask {
     String id

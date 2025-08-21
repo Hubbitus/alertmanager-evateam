@@ -3,14 +3,17 @@ package info.hubbitus.DTO
 import com.fasterxml.jackson.annotation.JsonBackReference
 import groovy.transform.AutoClone
 import groovy.transform.Canonical
+import groovy.transform.CompileStatic
 import groovy.transform.ToString
 
 import java.time.ZonedDateTime
 
 @Canonical
 @AutoClone
+@CompileStatic
 @ToString(includeNames=true, includePackage=false)
 class Alert {
+
 	@JsonBackReference
 	public AlertRequest alertRequestParent
 
@@ -27,6 +30,9 @@ class Alert {
 	/**
 	* Just fast access to do not check always in labels and annotations.
 	**/
-	@Lazy
-	Map params = {labels + alertRequestParent.commonAnnotations + annotations}()
+//	@Lazy
+//	Map<String, String> params = {labels + alertRequestParent.commonAnnotations + annotations}()
+	Map<String, String> params () {
+        return labels + alertRequestParent.commonAnnotations + annotations
+    }
 }
