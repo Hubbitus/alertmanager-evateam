@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 * There as enums listed most common, global options.
 * Also parsed dynamic values of fields:
 * `eva__field__*` - all fields which we are best trying to set in target issue. For examples: `eva__field__assignee: plalexeev`, `eva__field__priority: High`.
-* Please note, for values takes array, please provide it as comma-separated string, like: `eva__field__labels: 'label_one, labelTwo, label:three'`
+* Please note, for values takes array, please provide it as comma-separated string, like: `eva__field__tags: 'label_one, labelTwo, label:three'`
 * `eva__field__name__<n>`/`eva__field__value__<n>` pairs. See notes below about possible variants of quoting and names providing
 **/
 @CompileStatic

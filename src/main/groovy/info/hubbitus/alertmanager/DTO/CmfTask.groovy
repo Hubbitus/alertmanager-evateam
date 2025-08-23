@@ -56,6 +56,8 @@ class CmfTask {
     * @uses ConfigProvider ad access configuration
     **/
     URI taskURI(String appUrlBase='//') {
+        assert !(null == appUrlBase && null == code)
+
         if (code) {
             return new URI("${ConfigProvider.getConfig().getValue("eva.api.base", String.class)}desk/Task/${code}")
         }

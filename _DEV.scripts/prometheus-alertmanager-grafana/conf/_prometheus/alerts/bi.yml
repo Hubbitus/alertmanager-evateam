@@ -21,7 +21,7 @@ groups:
         eva__project: data-alerts
         eva__issue_type_name: Task
         eva__field__assignee: plalexeev
-        eva__field__labels: 'label_one, labelTwo, label:three'
+        eva__field__tags: 'label_one, labelTwo, label:three'
         eva__field__name__1: 'Итоговый результат'
         eva__field__value__1: 'Some result description (описание результата)'
         # Field 'Target start'

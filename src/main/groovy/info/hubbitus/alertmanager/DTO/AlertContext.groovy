@@ -54,7 +54,7 @@ class AlertContext {
 	* The most important which must be set for rule:
 	*
 	* `eva__field__*` - all fields which we are best trying to set in target issue. For examples: `eva__field__assignee: plalexeev`, `eva__field__priority: High`.
-	* Please note, for values contains list of values (array), please provide it in JSON form with square brackets and proper quoting. E.g.: `eva__field__labels: '["label_one", "labelTwo", "label:three"]'`
+	* Please note, for values contains list of values (array), please provide it in JSON form with square brackets and proper quoting. E.g.: `eva__field__tags: '["label_one", "labelTwo", "label:three"]'`
 	* `eva__field__name__<n>`/`eva__field__value__<n>` pairs. See notes below about possible variants of quoting and names providing
 	*
     * See more description and examples in the README.md file.
@@ -148,7 +148,7 @@ class AlertContext {
 	* labels:
 	*   severity: warning
 	* annotations:
-	*   eva__field__labels: 'label_one, labelTwo, label:three, severity:${context.field("severity")}'
+	*   eva__field__tags: 'label_one, labelTwo, label:three, severity:${context.field("severity")}'
 	* </code>
 	* See more details and examples in readme.
 	**/

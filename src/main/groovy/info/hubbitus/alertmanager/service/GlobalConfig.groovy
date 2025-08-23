@@ -7,7 +7,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty
 
 @ApplicationScoped
 class GlobalConfig {
-    private static String baseURL
+    private String baseURL
 
     EvaClient client
 
@@ -16,7 +16,7 @@ class GlobalConfig {
         this.baseURL = baseURL
     }
 
-    static String getBaseURL(RoutingContext context) {
+    String getBaseURL(RoutingContext context) {
         return (
             "auto" == baseURL
                 ? "${context.request().isSSL() ? "https" : "http"}://${context.request().getHeader("host")}"
