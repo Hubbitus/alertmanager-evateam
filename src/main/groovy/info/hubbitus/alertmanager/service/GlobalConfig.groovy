@@ -19,7 +19,7 @@ class GlobalConfig {
     String getBaseURL(RoutingContext context) {
         return (
             "auto" == baseURL
-                ? "${context.request().isSSL() ? "https" : "http"}://${context.request().getHeader("host")}"
+                ? "${context?.request()?.isSSL() ? "https" : "http"}://${context?.request()?.getHeader("host")}"
                 : baseURL
         )
     }

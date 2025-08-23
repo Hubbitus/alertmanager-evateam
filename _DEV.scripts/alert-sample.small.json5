@@ -18,7 +18,7 @@
         "description": "Some description QAZ2\nof DataTest0 alert\nVALUE: 3\n",
         "eva__field__assignee": "plalexeev",
         "eva__field__issue_type_name": "Alert",
-        "eva__field__project_key": "DATA",
+        "eva__project": "DATA",
         "qaz1_annotation": "qaz1_annotation_value",
         "summary": "DataTest0 summary",
         "value": "3"

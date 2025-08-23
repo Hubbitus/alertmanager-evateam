@@ -73,6 +73,51 @@ POST(api) {
     body(
         """{
             "jsonrpc": "2.2",
+            "method": "CmfTask.create",
+            "kwargs": {
+                "logic_type" : "Alert",
+                "name" : "[] Завершился ошибкой DAG reindex - 2025-08-23",
+                "text" : "test description - empty",
+                "tags" : [ "DQ", "DQ:issue", "alert:airflow" ],
+                "Component/s" : "DQ-issues+alerts, DevOps+infrastructure",
+                "priority" : "1",
+                "project" : "data-alerts",
+                "cf_alert_id" : "alert[2f559d99774e36e8]"
+            },
+            "callid": "необязательный параметр",
+            "jshash": "??",
+            "fields": "***",
+            "no_meta": true
+        }"""
+    )
+}
+
+
+.then {
+    val id = jsonPath().readString("\$.result")
+    POST(api) {
+        contentType("application/json")
+        header("Authorization", "Bearer $token")
+        body(
+            """{
+            "jsonrpc": "2.2",
+            "method": "CmfTask.get",
+            "kwargs": {"filter": ["id", "==", "$id"]},
+            "callid": "необязательный параметр",
+            "jshash": "??",
+            "fields": "***",
+            "no_meta": true
+        }"""
+        )
+    }
+}
+
+POST(api) {
+    contentType("application/json")
+    header("Authorization", "Bearer $token")
+    body(
+        """{
+            "jsonrpc": "2.2",
             "method": "CmfTask.list",
             "kwargs": {
                 "filter": ["AND",["project.code","IN",["data-alerts"]],["cf_alert_id","=","autotest"]]

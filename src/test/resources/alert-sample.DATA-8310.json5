@@ -34,7 +34,7 @@
                 "eva__field__value__1": "DQ-issues+alerts, DevOps+infrastructure",
                 "eva__issue_type_name": "Alert",
                 "eva__bql_to_find_issue_for_update": "[[\"cf_alert_id\",\"=\",\"${context.alert.fingerprint}\"],[\"cache_status_type\",\"!=\",\"CLOSED\"]]",
-                "eva__field__project": "data-alerts"
+                "eva__project": "data-alerts"
             },
             "startsAt": "2025-05-27T09:11:00Z",
             "endsAt": "0001-01-01T00:00:00Z",
@@ -78,7 +78,7 @@
         "eva__field__value__1": "DQ-issues+alerts, DevOps+infrastructure",
         "eva__issue_type_name": "Alert",
         "eva__bql_to_find_issue_for_update": "[\"cf_alert_id\",\"=\",\"${context.alert.fingerprint}\"],[\"cache_status_type\",\"!=\",\"CLOSED\"]]",
-        "eva__field__project": "data-alerts"
+        "eva__project": "data-alerts"
     },
     "externalURL": "https://alert-private.gid.team",
     "version": "4",

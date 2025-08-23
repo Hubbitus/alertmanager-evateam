@@ -35,7 +35,7 @@ receivers:
         eva__field__severity: High
         value: '{{$value}}'
       annotations:
-        eva__field__project: data-alerts
+        eva__project: data-alerts
         eva__field__issue_type_name: Task
         eva__field__cf_env: PROD
         summary: DataTest0 summary

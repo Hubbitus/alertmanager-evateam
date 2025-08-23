@@ -10,14 +10,14 @@
         "global_label_1": "2",
         "instance": "localhost:9090",
         "eva__field__priority": "1",
-        "eva__issue_type_name": "Task",
+        "eva__issue_type_name": "Alert",
         "eva__project": "data-alerts",
         "job": "prometheus",
         "severity": "warning"
       },
       "annotations": {
         "description": "Some description QAZ2\nof DataTest0 alert\nVALUE: 3\nText should be as is: $some, $200",
-        "eva__issue_type_name": "Task",
+        "eva__issue_type_name": "Alert",
         "eva__project": "data-alerts",
         "eva__field__tags": "[\"label_one\", \"labelTwo\", \"label:three\", \"label:four\", \"severity:${context.field('severity')}\"]",
 		"eva__field__name__1": "composite field name",

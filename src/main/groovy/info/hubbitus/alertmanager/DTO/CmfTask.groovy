@@ -3,7 +3,6 @@ package info.hubbitus.alertmanager.DTO
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
-import info.hubbitus.alertmanager.service.GlobalConfig
 import io.vertx.core.json.JsonObject
 import org.eclipse.microprofile.config.ConfigProvider
 
@@ -36,7 +35,7 @@ class CmfTask {
     String id
     String parent
     String project
-    String type = 'Task'
+    String logic_type
     String name
     String code
     String text

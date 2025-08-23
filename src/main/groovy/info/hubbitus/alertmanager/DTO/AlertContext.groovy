@@ -34,12 +34,13 @@ class AlertContext {
     CmfTask toCmfTask() {
         return new CmfTask(
             project: field(EVA__PROJECT),
-            type: field(EVA__ISSUE_TYPE_NAME),
+            parent: field(EVA__PROJECT),
+            logic_type: field(EVA__ISSUE_TYPE_NAME),
             name: field('summary'),
             text: field('description')
         ).tap {CmfTask task ->
             task.properties.findAll {
-                !(it.key as String in ['class', 'other_fields', 'project', 'type', 'name', 'text'])
+                !(it.key as String in ['class', 'other_fields', 'project', 'parent', 'logic_type', 'name', 'text']) // Set before
             }.each {
                 task.setProperty(it.key as String, evaFields[it.key]?.value)
             }

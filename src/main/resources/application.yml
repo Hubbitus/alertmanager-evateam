@@ -47,8 +47,9 @@ quarkus:
 app:
   # Special value "auto" means to use Host HTTP header automatically.
   # Value without trailing /
-  baseURL: auto
+#  baseURL: auto
 #  baseURL: https://eva-alert.k8s-dev.gid.team
+  baseURL: http://localhost:8080
 eva:
   api:
     base: https://eva-lab.gid.team/

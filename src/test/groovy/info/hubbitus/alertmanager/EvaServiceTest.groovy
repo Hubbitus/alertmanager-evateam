@@ -7,6 +7,7 @@ import info.hubbitus.alertmanager.DTO.AlertContext
 import info.hubbitus.alertmanager.DTO.AlertRequest
 import info.hubbitus.alertmanager.DTO.CmfTask
 import info.hubbitus.alertmanager.service.EvateamService
+import info.hubbitus.alertmanager.service.GlobalConfig
 import io.quarkus.test.junit.QuarkusTest
 import io.smallrye.mutiny.Uni
 import io.vertx.core.json.JsonObject
@@ -36,6 +37,9 @@ class EvaServiceTest {
     @Inject
     Logger log
 
+    @Inject
+    GlobalConfig config
+
 	@BeforeEach
 	void setupTest() {
 		objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true)
@@ -48,7 +52,7 @@ class EvaServiceTest {
                 project: 'data-alerts',
                 name: 'Test alertmanager-evateam',
                 text: 'Test text creating issue from java',
-                type: 'Task',
+                logic_type: 'Alert',
                 other_fields: [
                     cf_alert_id: 'autotest',
                     workflow: 'Data-Alert'
@@ -57,18 +61,18 @@ class EvaServiceTest {
         )
 
         CmfTask task = uni.await().indefinitely()
-        log.debugf('Created task id [%s]', task.getId())
+        log.debugf('Created task [%s]', task.taskURI(config.getBaseURL(null)))
         assertThat(task.id, notNullValue())
         assertThat(task.name, nullValue())
         assertThat(task.text, nullValue())
-        assertThat(task.type, is('Task'))
+        assertThat(task.logic_type, nullValue())
         assertThat(task.other_fields, is([:]))
 
         task = eva.getTaskById(task.id).await().indefinitely()
-        log.debugf('Created task %s, full: %s', task.taskURI(), task)
+        log.debugf('Created task %s, full: %s', task.taskURI(config.getBaseURL(null)), task)
         assertThat(task.name, is('Test alertmanager-evateam'))
         assertThat(task.code, startsWith('ALERT-'))
-        assertThat(task.type, is('Task'))
+        assertThat(task.logic_type, nullValue()) // Does not returned in the result
         assertThat(task.text, nullValue()) // Does not returned by default
         assertThat(task.parent, nullValue())
         assertThat(task.project, is('CmfProject:07796e28-2054-11f0-a901-3e9b82c78085'))
@@ -178,11 +182,11 @@ class EvaServiceTest {
         CmfTask task = issuesToCreate.first()
         // Values may be filled only n saved issues:
         assertThat(task.id, nullValue())
-        assertThat(task.parent, nullValue())
+        assertThat(task.parent, is('data-alerts'))
         assertThat(task.code, nullValue())
         // Parsed values
         assertThat(task.project, is('data-alerts'))
-        assertThat(task.type, is('Task'))
+        assertThat(task.logic_type, is('Alert'))
         assertThat(task.name, startsWith("DataTest0 summary ${LocalDate.now()}"))
         assertThat(task.text, is("Some description QAZ2\nof DataTest0 alert\nVALUE: 3\nText should be as is: \$some, \$200"))
         assertThat(task.other_fields, is([priority: "1", assignee: 'plalexeev', 'composite field name': 'composite field value', 'cf_alert_id': alertContext.alert.hashCode().toString()]))
