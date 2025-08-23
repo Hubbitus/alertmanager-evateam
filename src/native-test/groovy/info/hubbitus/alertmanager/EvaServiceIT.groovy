@@ -1,4 +1,6 @@
-import info.hubbitus.EvaServiceTest
+package info.hubbitus.alertmanager
+
+
 import io.quarkus.test.junit.QuarkusTest
 
 @QuarkusTest

@@ -18,8 +18,8 @@ quarkus:
         level: WARN
       "info.hubbitus":
         level: DEBUG
-      "info.hubbitus.evateam":
-        level: WARN
+      "info.hubbitus.alertmanager":
+        level: DEBUG
       # By https://stackoverflow.com/a/68220910/307525
       # Produce a lot of info about HTTP traffic for the debug
 #      "org.apache.http":
@@ -44,6 +44,11 @@ quarkus:
         # Default disabled, must be enabled per configuration
         enabled: false
 
+app:
+  # Special value "auto" means to use Host HTTP header automatically.
+  # Value without trailing /
+  baseURL: auto
+#  baseURL: https://eva-alert.k8s-dev.gid.team
 eva:
   api:
     base: https://eva-lab.gid.team/

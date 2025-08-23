@@ -1,11 +1,11 @@
-package info.hubbitus.DTO
+package info.hubbitus.alertmanager.DTO
 
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
-import info.hubbitus.evateam.EvaField
+import info.hubbitus.alertmanager.service.GlobalConfig
 import io.vertx.core.json.JsonObject
-import org.eclipse.microprofile.config.inject.ConfigProperty
+import org.eclipse.microprofile.config.ConfigProvider
 
 /**
 * In result answer like:
@@ -53,9 +53,22 @@ class CmfTask {
 
     /**
     * @return String URL to open task in browser
+    * @uses ConfigProvider ad access configuration
     **/
-    String taskUrl(String evateamUrlBase='//') {
-        return "${evateamUrlBase}desk/Task/${code}"
+    URI taskURI(String appUrlBase='//') {
+        if (code) {
+            return new URI("${ConfigProvider.getConfig().getValue("eva.api.base", String.class)}desk/Task/${code}")
+        }
+        else {
+            return new URI("${appUrlBase}/taskById/${id}")
+        }
+    }
+
+    /**
+    * @return String URL to open task in browser
+    **/
+    String taskURIWithName(String appUrlBase='//') {
+        return "«${name}»[${taskURI(appUrlBase)}]"
     }
 
     /**
@@ -64,6 +77,9 @@ class CmfTask {
     * @return new instance of CmfTask
     **/
     static CmfTask fromJson (JsonObject json) {
+        if (null == json)
+            return null
+
         return new CmfTask().tap {
             id = json.getString('id')
             parent = json.getString('parent')

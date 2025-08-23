@@ -1,8 +1,7 @@
-package info.hubbitus;
+package info.hubbitus.alertmanager;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.filter.log.LogDetail;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -22,7 +21,7 @@ import static org.hamcrest.core.Is.is;
 public class AlertControllerTest {
 
 	@Test
-	void testPingEndpoint() {
+	void test00_PingEndpoint() {
 		given()
 			.when()
 				.get("/ping")
@@ -32,7 +31,7 @@ public class AlertControllerTest {
 	}
 
 	@Test
-    @Disabled("Only for run manually because require external EvaTeam instance")
+//    @Disabled("Only for run manually because require external EvaTeam instance")
 	void test01_SimplePostAlert() throws IOException {
 		given()
 			.contentType("application/json")
@@ -42,9 +41,9 @@ public class AlertControllerTest {
 			.then()
 				.log().ifValidationFails(LogDetail.BODY)
 				.body(not(empty()))
-				.body("content.result", is("ok"))
+				.body("result", is("ok"))
                 .statusCode(200)
-                .body("content.eva_response", not(emptyArray()))
+                .body("eva_response", not(emptyArray()))
 		;
 	}
 
@@ -52,7 +51,7 @@ public class AlertControllerTest {
     * By issue DATA-8310
     **/
     @Test
-    @Disabled("Only for run manually because require external EvaTeam instance")
+//    @Disabled("Only for run manually because require external EvaTeam instance")
     void test02_PostAlertDATA8310() throws IOException {
         given()
             .contentType("application/json")
@@ -62,10 +61,40 @@ public class AlertControllerTest {
             .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .body(not(empty()))
-                .body("content.result", is("ok"))
+                .body("result", is("ok"))
                 .statusCode(200)
-                .body("content.eva_response", not(emptyArray()))
+                .body("eva_response", not(emptyArray()))
         ;
+    }
+
+    @Test
+//    @Disabled("Only for run manually because require external EvaTeam instance")
+    void test03_TaskById_Redirect() {
+        given()
+            .contentType("application/json")
+            .redirects().follow(false)
+            .when()
+                .get("/taskById/CmfTask:8db89714-7d4e-11f0-b4ca-c2c62e14532e")
+            .then()
+                .statusCode(303) // See Other
+                .header("Location", "https://eva-lab.gid.team/desk/Task/ALERT-110")
+                .body("result", is("ok"))
+                .body("redirect_to", is("https://eva-lab.gid.team/desk/Task/ALERT-110"));
+    }
+
+        @Test
+//    @Disabled("Only for run manually because require external EvaTeam instance")
+    void test03_TaskByCommentId_Redirect() {
+        given()
+            .contentType("application/json")
+            .redirects().follow(false)
+            .when()
+                .get("/taskById/CmfComment:5dc630a2-801e-11f0-8c51-c6b6a7ba31d9")
+            .then()
+                .statusCode(303) // See Other
+                .header("Location", "https://eva-lab.gid.team/desk/Task/ALERT-90")
+                .body("result", is("ok"))
+                .body("redirect_to", is("https://eva-lab.gid.team/desk/Task/ALERT-90"));
     }
 
 	/* *********************

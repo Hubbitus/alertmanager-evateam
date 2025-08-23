@@ -1,4 +1,4 @@
-package info.hubbitus.evateam
+package info.hubbitus.alertmanager.evateam
 
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -19,19 +19,24 @@ import org.jboss.logging.Logger
 @CompileStatic
 @ApplicationScoped
 class EvaClient {
-    @ConfigProperty(name='eva.api.base')
-    public String evateamUrl
 
-    @ConfigProperty(name='eva.api.token')
-    private String evateamToken
+    private final String evateamUrl
+
+    String getEvateamUrl(){
+        return this.evateamUrl
+    }
+
+    private final String evateamToken
 
     WebClient webClient
 
     @Inject
     Logger log
 
-    EvaClient(Vertx vertx){
+    EvaClient(Vertx vertx, @ConfigProperty(name='eva.api.base') String evateamUrl, @ConfigProperty(name='eva.api.token') String evateamToken){
         this.webClient = WebClient.create(vertx)
+        this.evateamUrl = evateamUrl
+        this.evateamToken = evateamToken
     }
 
     Uni<JsonObject> call(String method, Map kwargs=[:], Map args=[:], String fields='*', Map filter=[:], boolean no_meta=true, Map flags=['admin_mode': false]){

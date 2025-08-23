@@ -32,7 +32,7 @@
                 "eva__field__priority": "1",
                 "summary": "[] Завершился ошибкой DAG reindex - ${java.time.LocalDate.now()}",
                 "eva__field__value__1": "DQ-issues+alerts, DevOps+infrastructure",
-                "eva__field__issue_type_name": "Alert",
+                "eva__issue_type_name": "Alert",
                 "eva__bql_to_find_issue_for_update": "[[\"cf_alert_id\",\"=\",\"${context.alert.fingerprint}\"],[\"cache_status_type\",\"!=\",\"CLOSED\"]]",
                 "eva__field__project": "data-alerts"
             },
@@ -76,7 +76,7 @@
         "eva__field__priority": "1",
         "summary": "[] Завершился ошибкой DAG reindex - ${java.time.LocalDate.now()}",
         "eva__field__value__1": "DQ-issues+alerts, DevOps+infrastructure",
-        "eva__field__issue_type_name": "Alert",
+        "eva__issue_type_name": "Alert",
         "eva__bql_to_find_issue_for_update": "[\"cf_alert_id\",\"=\",\"${context.alert.fingerprint}\"],[\"cache_status_type\",\"!=\",\"CLOSED\"]]",
         "eva__field__project": "data-alerts"
     },

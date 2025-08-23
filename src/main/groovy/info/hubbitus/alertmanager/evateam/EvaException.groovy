@@ -1,4 +1,4 @@
-package info.hubbitus.evateam
+package info.hubbitus.alertmanager.evateam
 
 import groovy.transform.CompileStatic
 

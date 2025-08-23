@@ -1,6 +1,5 @@
-package hubbitus;
+package info.hubbitus.alertmanager;
 
-import info.hubbitus.AlertControllerTest;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 /**

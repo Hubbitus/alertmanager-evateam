@@ -1,4 +1,4 @@
-package info.hubbitus.DTO
+package info.hubbitus.alertmanager.DTO
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import groovy.transform.AutoClone

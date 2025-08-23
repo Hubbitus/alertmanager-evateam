@@ -1,12 +1,12 @@
-package info.hubbitus.DTO
+package info.hubbitus.alertmanager.DTO
 
 import groovy.text.SimpleTemplateEngine
 import groovy.transform.*
-import info.hubbitus.evateam.EvaField
-import info.hubbitus.evateam.OptionsFields
+import info.hubbitus.alertmanager.evateam.EvaField
+import info.hubbitus.alertmanager.evateam.OptionsFields
 import org.jboss.logging.Logger
 
-import static info.hubbitus.evateam.OptionsFields.*
+import static info.hubbitus.alertmanager.evateam.OptionsFields.*
 
 /**
 * Context of alerting.

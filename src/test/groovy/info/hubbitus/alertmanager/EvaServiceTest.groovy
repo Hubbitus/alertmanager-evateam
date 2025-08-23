@@ -1,12 +1,12 @@
-package info.hubbitus
+package info.hubbitus.alertmanager
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
-import info.hubbitus.DTO.Alert
-import info.hubbitus.DTO.AlertContext
-import info.hubbitus.DTO.AlertRequest
-import info.hubbitus.DTO.CmfTask
-import info.hubbitus.service.EvateamService
+import info.hubbitus.alertmanager.DTO.Alert
+import info.hubbitus.alertmanager.DTO.AlertContext
+import info.hubbitus.alertmanager.DTO.AlertRequest
+import info.hubbitus.alertmanager.DTO.CmfTask
+import info.hubbitus.alertmanager.service.EvateamService
 import io.quarkus.test.junit.QuarkusTest
 import io.smallrye.mutiny.Uni
 import io.vertx.core.json.JsonObject
@@ -65,7 +65,7 @@ class EvaServiceTest {
         assertThat(task.other_fields, is([:]))
 
         task = eva.getTaskById(task.id).await().indefinitely()
-        log.debugf('Created task %s, full: %s', task.taskUrl(eva.client.evateamUrl), task)
+        log.debugf('Created task %s, full: %s', task.taskURI(), task)
         assertThat(task.name, is('Test alertmanager-evateam'))
         assertThat(task.code, startsWith('ALERT-'))
         assertThat(task.type, is('Task'))

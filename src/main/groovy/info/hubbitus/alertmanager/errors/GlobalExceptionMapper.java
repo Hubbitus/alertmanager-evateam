@@ -1,8 +1,7 @@
-package info.hubbitus.errors;
+package info.hubbitus.alertmanager.errors;
 
 import groovy.transform.CompileStatic;
-import info.hubbitus.evateam.EvaException;
-import io.quarkus.runtime.annotations.RegisterForReflection;
+import info.hubbitus.alertmanager.evateam.EvaException;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.MediaType;
@@ -11,12 +10,13 @@ import jakarta.ws.rs.core.Variant;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.jboss.resteasy.reactive.server.spi.ResteasyReactiveResourceInfo;
 
 @CompileStatic
 @SuppressWarnings("unused") // Quarkus configuration, used indirectly
 public class GlobalExceptionMapper {
 
-	@RegisterForReflection(classNames={"info.hubbitus.errors.GlobalExceptionMapper$Resp"}) // Required!!! See bug https://github.com/quarkusio/quarkus/issues/38203
+//?	@RegisterForReflection(classNames={"info.hubbitus.alertmanager.errors.GlobalExceptionMapper.Resp"}) // Required!!! See bug https://github.com/quarkusio/quarkus/issues/38203
 	public record Resp (Status status, String type, String message) {
 		public enum Status {
 			OK, ERROR
@@ -40,7 +40,7 @@ public class GlobalExceptionMapper {
 
 	@ServerExceptionMapper
 	public Response mapException(EvaException exception, ResourceInfo resourceInfo) {
-        log.errorf(exception, "mapException(EvaException exception, resourceInfo): resourceInfo: {}", resourceInfo);
+        log.errorf(exception, "mapException(EvaException exception, resourceInfo): resourceInfo: {}", ((ResteasyReactiveResourceInfo) resourceInfo).getMethodId());
 		return Response.status(Response.Status.BAD_REQUEST)
 			.entity(Resp.byException(exception))
 			.type(MediaType.APPLICATION_JSON)
@@ -49,7 +49,7 @@ public class GlobalExceptionMapper {
 
 	@ServerExceptionMapper
 	public Response mapException(IllegalArgumentException exception, ResourceInfo resourceInfo) {
-        log.errorf(exception, "mapException(IllegalArgumentException exception, resourceInfo): resourceInfo: %s", resourceInfo);
+        log.errorf(exception, "mapException(IllegalArgumentException exception, resourceInfo): resourceInfo: %s", ((ResteasyReactiveResourceInfo) resourceInfo).getMethodId());
         return Response.status(Response.Status.BAD_REQUEST)
 			.entity(Resp.byException(exception))
 			.type(MediaType.APPLICATION_JSON)
@@ -58,7 +58,7 @@ public class GlobalExceptionMapper {
 
     @ServerExceptionMapper
     public Response mapException(Throwable exception, ResourceInfo resourceInfo) {
-        log.errorf(exception, "mapException(Throwable exception, resourceInfo): resourceInfo: %s", resourceInfo.toString());
+        log.errorf(exception, "mapException(Throwable exception, resourceInfo): resourceInfo: %s", ((ResteasyReactiveResourceInfo) resourceInfo).getMethodId());
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(Resp.byException(exception))
                 .type(MediaType.APPLICATION_JSON)

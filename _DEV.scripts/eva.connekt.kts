@@ -12,7 +12,10 @@ val token: String by env
 //"jshash": "??"
 //}' -H 'Authorization: Bearer ***********************'
 
-// https://amplicode.ru/http-client/
+/*******************************
+ **          CmfTask
+ *******************************/
+
 POST(api) {
     contentType("application/json")
     header("Authorization", "Bearer $token")
@@ -32,6 +35,21 @@ POST(api) {
 //    jsonPath().readString("$.result")
 //}
 
+POST(api) {
+    contentType("application/json")
+    header("Authorization", "Bearer $token")
+    body(
+        """{
+            "jsonrpc": "2.2",
+            "method": "CmfTask.get_meta",
+            "kwargs": {},
+            "callid": "необязательный параметр",
+            "jshash": "??",
+            "fields": "***",
+            "no_meta": true
+        }"""
+    )
+}
 
 POST(api) {
     contentType("application/json")
@@ -67,6 +85,9 @@ POST(api) {
     )
 }
 
+/*******************************
+ **          CmfTag
+ *******************************/
 
 POST(api) {
     contentType("application/json")
@@ -106,3 +127,22 @@ POST(api) {
     )
 }
 
+/*******************************
+**          CmfComment
+*******************************/
+
+POST(api) {
+    contentType("application/json")
+    header("Authorization", "Bearer $token")
+    body(
+        """{
+            "jsonrpc": "2.2",
+            "method": "CmfComment.get",
+            "kwargs": {"filter": ["id", "==", "CmfComment:4917c162-7faa-11f0-9b36-c6b6a7ba31d9"]},
+            "callid": "необязательный параметр",
+            "jshash": "??",
+            "fields": "***",
+            "no_meta": true
+        }"""
+    )
+}

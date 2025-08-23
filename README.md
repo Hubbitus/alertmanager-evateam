@@ -69,7 +69,7 @@ The most important which may be set for rule:
 * `eva__project` - the project name in which issue creation is supposed to (e.g. `data-alerts`).
 * `eva__issue_type_name` - the type of issue (e.g. `Task`).
 * `eva__field__*` - all fields that we are best trying to set in target issue. For examples: `eva__field__assignee: plalexeev`, `eva__field__priority: Hight`.
-  * Please note, for values contains list of values (array), please provide it in JSON form with square brackets and proper quoting. E.g.: `eva__field__labels: '["label_one", "labelTwo", "label:three"]'`
+  * Please note, for values contains list of values (array), please provide it in JSON form with square brackets and proper quoting. E.g.: `eva__field__tags: '["label_one", "labelTwo", "label:three"]'`
 * `eva__field__name__<n>`/`eva__field__value__<n>` pairs. See the notes below about possible variants and names providing with examples.
 * `eva__identification_field_name` Field name to use for identification of issue. By default, `cf_alert_id`
   * Please note, due to the EvaTeam structure and fact what `tags` must be created separately before assigning to the Task, it may be much more slowly use `tags` as value there. We strongly recommend to create separate issue field with String type like 'AlertID' (`cf_alert_id`) and use it there
@@ -124,11 +124,11 @@ Suppose you have in alert definition:
   labels:
     severity: warning
   annotations:
-    eva__field__labels: '["label_one", "labelTwo", "label:three", "severity:${context.field("severity")}"]'
+    eva__field__tags: '["label_one", "labelTwo", "label:three", "severity:${context.field("severity")}"]'
 ```
 
-For the values `context` see class [AlertContext](src/main/groovy/info/hubbitus/DTO/AlertContext.groovy). There are many interesting fields for use, like:
-* `alert` - [Alert](src/main/groovy/info/hubbitus/DTO/Alert.groovy) object of incoming data
+For the values `context` see class [AlertContext](src/main/groovy/info/hubbitus/alertmanager/DTO/AlertContext.groovy). There are many interesting fields for use, like:
+* `alert` - [Alert](src/main/groovy/info/hubbitus/alertmanager/DTO/Alert.groovy) object of incoming data
 * `log` - Logger instance
 
 ## Tech overview
@@ -195,7 +195,7 @@ See [documentation](https://quarkus.io/guides/building-native-image#creating-a-c
 
 > **WARNING**! There is no mocks for the EvaTeam instance. To run tests you need:
 > 1. Running EvaTeam instance and proper environment configuration
-> 2. Probably you need comment out `@Disabled` annotation in [AlertControllerTest.java](src/test/java/info/hubbitus/AlertControllerTest.java)
+> 2. Probably you need comment out `@Disabled` annotation in [AlertControllerTest.java](src/test/java/info/hubbitus/alertmanager/AlertControllerTest.java)
 
 To run integration tests:
 

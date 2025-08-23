@@ -1,13 +1,14 @@
-package info.hubbitus.service
+package info.hubbitus.alertmanager.service
 
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
-import info.hubbitus.DTO.Alert
-import info.hubbitus.DTO.AlertContext
-import info.hubbitus.DTO.AlertRequest
-import info.hubbitus.DTO.CmfTask
-import info.hubbitus.evateam.EvaClient
-import info.hubbitus.evateam.EvaField
+import info.hubbitus.alertmanager.DTO.Alert
+import info.hubbitus.alertmanager.DTO.AlertContext
+import info.hubbitus.alertmanager.DTO.AlertRequest
+import info.hubbitus.alertmanager.DTO.CmfComment
+import info.hubbitus.alertmanager.DTO.CmfTask
+import info.hubbitus.alertmanager.evateam.EvaClient
+import info.hubbitus.alertmanager.evateam.EvaField
 import io.smallrye.mutiny.Multi
 import io.smallrye.mutiny.Uni
 import io.vertx.core.json.JsonObject
@@ -15,8 +16,8 @@ import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import org.jboss.logging.Logger
 
-import static info.hubbitus.evateam.OptionsFields.EVA__BQL_TO_FIND_ISSUE_FOR_UPDATE
-import static info.hubbitus.evateam.OptionsFields.EVA__COMMENT_IN_PRESENT_ISSUES
+import static info.hubbitus.alertmanager.evateam.OptionsFields.EVA__BQL_TO_FIND_ISSUE_FOR_UPDATE
+import static info.hubbitus.alertmanager.evateam.OptionsFields.EVA__COMMENT_IN_PRESENT_ISSUES
 
 @CompileStatic
 @ApplicationScoped
@@ -34,7 +35,6 @@ class EvateamService {
     * @param summary
     * @param description
     **/
-//    Multi process(AlertRequest alertRequest) {
     Multi<JsonObject> process(AlertRequest alertRequest) {
         return Multi.createBy().merging().streams (
             alertRequest.alerts.collect { Alert alert ->
@@ -72,7 +72,7 @@ class EvateamService {
 
     /**
     * Create task by provided DTO and return raw JsonObject of response
-    * @see #createTask(info.hubbitus.DTO.CmfTask)  for return DTO object
+    * @see #createTask(CmfTask)  for return DTO object
     **/
     private Uni<JsonObject> createTaskRawWithTags(CmfTask task) {
         if (task.tags) {
@@ -89,7 +89,7 @@ class EvateamService {
 
     /**
     * Create task by provided DTO
-    * @see #createTaskRawWithTags(info.hubbitus.DTO.CmfTask) for variant returning raw response
+    * @see #createTaskRawWithTags(CmfTask) for variant returning raw response
     **/
     Uni<CmfTask> createTask(CmfTask task) {
         def ret = createTaskRawWithTags(task).onItem().transform { JsonObject json ->
@@ -115,6 +115,17 @@ class EvateamService {
     }
 
     /**
+    * Retrieve task by its ID or Comment ID (other types may be added later)
+    **/
+    Uni<CmfTask> getTaskByAnyObjectId(String id){
+        return switch (id.split(':')[0]) {
+            case 'CmfTask' -> getTaskById(id)
+            case 'CmfComment' -> getTaskByCommentId(id)
+            default -> throw new IllegalArgumentException("Unknown object type: ${id.split(':')[0]}")
+        }
+    }
+
+    /**
     * Retrieve task by its ID
     **/
     Uni<CmfTask> getTaskById(String id){
@@ -127,6 +138,24 @@ class EvateamService {
             JsonObject res = json.getJsonObject('result')
             return CmfTask.fromJson(res)
         }
+    }
+
+    /**
+    * Returns a task based on the ID of a comment in the format CmfComment:4917c162-7faa-11f0-9b36-c6b6a7ba31d9
+    *
+    * @param commentId ID of the comment in the format CmfComment:4917c162-7faa-11f0-9b36-c6b6a7ba31d9
+    * @return The task associated with the comment
+    **/
+    Uni<CmfTask> getTaskByCommentId(String commentId) {
+        return client.call(
+            method: 'CmfComment.get',
+            kwargs: ['filter': ['id', '==', commentId]]
+        ).onItem().transform { JsonObject json ->
+            CmfComment comment = CmfComment.fromJson(json.getJsonObject('result'))
+            return comment.task.id
+        }.chain { String taskId ->
+            return getTaskById(taskId)
+        } as Uni<CmfTask>
     }
 
     /**
